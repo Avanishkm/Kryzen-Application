@@ -1,0 +1,100 @@
+/* General Styles */
+body {
+    font-family: Arial, sans-serif;
+  }
+  
+  .container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin: 20px;
+  }
+  
+  .productList {
+    text-align: center;
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+  
+  /* Product Item Styles */
+  .product-item {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+  }
+  
+  .prod-id {
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    transition: transform 0.2s;
+    width: 200px;
+  }
+  
+  .prod-id:hover {
+    transform: scale(1.05);
+  }
+  
+  .image img {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  .items {
+    padding: 10px;
+  }
+  
+  .items h4 {
+    font-size: 18px;
+    margin-bottom: 10px;
+    color: #333;
+  }
+  
+  .items .title {
+    display: block;
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 10px;
+  }
+  
+  .main, .main1, .main2 {
+    margin-bottom: 5px;
+  }
+  
+  .span1, .span2, .span3 {
+    display: block;
+    height: 10px;
+    background-color: #ddd;
+    border-radius: 4px;
+  }
+  
+  /* Button Styles */
+  .center {
+    text-align: center;
+    margin-top: 20px;
+  }
+  
+  .register_register {
+    background-color: #007bff;
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+  }
+  
+  .register_register:hover {
+    background-color: #0056b3;
+  }
+  
