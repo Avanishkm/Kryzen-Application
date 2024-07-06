@@ -1,18 +1,24 @@
 import React, { useEffect, useState } from "react";
 import { Link } from 'react-router-dom';
+import Modal from 'react-modal';
 import "./home.css";
+
+Modal.setAppElement('#root'); // Set the root element for accessibility
 
 const Home = () => {
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
-  const [newProduct, setNewProduct] = useState({ title: "", thumbnailUrl: "", type: "", price: "", createdAt: "" });
+  const [newProduct, setNewProduct] = useState({ title: "", image: "", type: "", price: "", createdAt: "" });
   const [editingProduct, setEditingProduct] = useState(null);
   const [filters, setFilters] = useState({ type: "", minPrice: "", maxPrice: "" });
   const [sortOrder, setSortOrder] = useState("Newest");
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [deleteModalIsOpen, setDeleteModalIsOpen] = useState(false);
+  const [productToDelete, setProductToDelete] = useState(null);
 
   const getProducts = async () => {
     try {
-      const response = await fetch("https://jsonplaceholder.typicode.com/albums/1/photos");
+      const response = await fetch("https://fakestoreapi.com/products");
       const data = await response.json();
       const productsWithDetails = data.map(product => ({
         ...product,
@@ -79,11 +85,12 @@ const Home = () => {
     const updatedProducts = [...products, newProd];
     setProducts(updatedProducts);
     setFilteredProducts(updatedProducts);
-    setNewProduct({ title: "", thumbnailUrl: "", type: "", price: "", createdAt: "" }); // Reset form
+    setNewProduct({ title: "", image: "", type: "", price: "", createdAt: "" }); // Reset form
   };
 
   const editProduct = (product) => {
     setEditingProduct(product);
+    setModalIsOpen(true);
   };
 
   const updateProduct = () => {
@@ -93,12 +100,20 @@ const Home = () => {
     setProducts(updatedProducts);
     setFilteredProducts(updatedProducts);
     setEditingProduct(null);
+    setModalIsOpen(false);
   };
 
-  const deleteProduct = (id) => {
-    const updatedProducts = products.filter((product) => product.id !== id);
+  const confirmDeleteProduct = (product) => {
+    setProductToDelete(product);
+    setDeleteModalIsOpen(true);
+  };
+
+  const deleteProduct = () => {
+    const updatedProducts = products.filter((product) => product.id !== productToDelete.id);
     setProducts(updatedProducts);
     setFilteredProducts(updatedProducts);
+    setProductToDelete(null);
+    setDeleteModalIsOpen(false);
   };
 
   useEffect(() => {
@@ -111,41 +126,40 @@ const Home = () => {
 
   return (
     <>
-
       <div className="top-bar">
         <Link to={"/login"}>
           <button type="submit" className="add-product-btn">
             Logout
           </button>
         </Link>
-    
       </div>
       <div className="productList">List Of Products</div>
-      
+
       <div className="product-form">
         <input
           type="text"
           name="title"
           placeholder="Product Title"
-          value={editingProduct ? editingProduct.title : newProduct.title}
+          value={editingProduct ? "" : newProduct.title}
           onChange={handleInputChange}
         />
         <input
           type="text"
-          name="thumbnailUrl"
+          name="image"
           placeholder="Thumbnail URL"
-          value={editingProduct ? editingProduct.thumbnailUrl : newProduct.thumbnailUrl}
+          value={editingProduct ? "" : newProduct.image}
           onChange={handleInputChange}
         />
         <input
           type="number"
           name="price"
           placeholder="Product Price"
-          value={editingProduct ? editingProduct.price : newProduct.price}
+          value={editingProduct ? "" : newProduct.price}
           onChange={handleInputChange}
         />
         {editingProduct ? (
-          <button onClick={updateProduct}>Update Product</button>
+          // <button onClick={updateProduct}>Update Product</button>
+          <></>
         ) : (
           <button onClick={addProduct}>Add Product</button>
         )}
@@ -197,14 +211,14 @@ const Home = () => {
         </select>
         <button onClick={() => applyFilters(sortOrder)}>Apply Filters</button>
       </div>
-      
+
       <div className="container">
         <div className="product-item">
           {filteredProducts.map((product) => (
             <div className="prod-id" key={product.id}>
               <div>
                 <div className="image">
-                  <img src={product.thumbnailUrl} alt={product.title} className="rounded" />
+                  <img src={product.image} alt={product.title} className="rounded" />
                 </div>
                 <div className="items">
                   <h4>{product.title}</h4>
@@ -213,18 +227,7 @@ const Home = () => {
                   <p>Price: ${product.price}</p>
                   <p>Created At: {new Date(product.createdAt).toLocaleString()}</p>
                   <button onClick={() => editProduct(product)}>Edit</button>
-                  <button onClick={() => deleteProduct(product.id)}>Delete</button>
-                  <div>
-                    <div className="main">
-                      <span className="span1"></span>
-                    </div>
-                    <div className="main1">
-                      <span className="span2"></span>
-                    </div>
-                    <div className="main2">
-                      <span className="span3"></span>
-                    </div>
-                  </div>
+                  <button onClick={() => confirmDeleteProduct(product)}>Delete</button>
                 </div>
               </div>
             </div>
@@ -232,13 +235,54 @@ const Home = () => {
         </div>
       </div>
 
-      
+      <Modal
+        isOpen={modalIsOpen}
+        onRequestClose={() => setModalIsOpen(false)}
+        contentLabel="Edit Product"
+        className="modal"
+        overlayClassName="modal-overlay"
+      >
+        <h2>Edit Product</h2>
+        <input
+          type="text"
+          name="title"
+          placeholder="Product Title"
+          value={editingProduct ? editingProduct.title : ""}
+          onChange={handleInputChange}
+        />
+        <input
+          type="text"
+          name="image"
+          placeholder="Thumbnail URL"
+          value={editingProduct ? editingProduct.image : ""}
+          onChange={handleInputChange}
+        />
+        <input
+          type="number"
+          name="price"
+          placeholder="Product Price"
+          value={editingProduct ? editingProduct.price : ""}
+          onChange={handleInputChange}
+        />
+        <button onClick={updateProduct}>Save</button>
+        <button onClick={() => setModalIsOpen(false)}>Cancel</button>
+      </Modal>
+
+      <Modal
+        isOpen={deleteModalIsOpen}
+        onRequestClose={() => setDeleteModalIsOpen(false)}
+        contentLabel="Delete Product"
+        className="modal"
+        overlayClassName="modal-overlay"
+      >
+        <h2>Are you sure you want to delete this product?</h2>
+        <p>{productToDelete && productToDelete.title}</p>
+        <button onClick={deleteProduct}>Yes</button>
+        <button onClick={() => setDeleteModalIsOpen(false)}>No</button>
+      </Modal>
     </>
   );
 };
 
 export default Home;
-
-
-
 
