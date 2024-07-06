@@ -3,6 +3,16 @@ import { Link } from 'react-router-dom'
 import "./login.css";
 
 const Login = () => {
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    const form = event.target;
+    if (form.checkValidity()) {
+      // Form is valid, perform login action here
+    } else {
+      form.reportValidity();
+    }
+  };
   return (
     <div className="register">
         <div className="registerWrapper">
@@ -16,7 +26,7 @@ const Login = () => {
         <h1>Login</h1>
         <p>It's quick and easy</p>
         <div className="hr3"></div>
-        <form>
+        <form onSubmit={handleSubmit}>
 
           <center>
             <input
