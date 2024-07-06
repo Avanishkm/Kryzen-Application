@@ -494,8 +494,8 @@ const Home = () => {
                   <p>Type: {product.type}</p>
                   <p>Price: ${product.price}</p>
                   <p>Created At: {new Date(product.createdAt).toLocaleString()}</p>
-                  <button onClick={() => editProduct(product)}>Edit</button>
-                  <button onClick={() => confirmDeleteProduct(product)}>Delete</button>
+                  <button onClick={() => editProduct(product)} className="editProd">Edit</button>
+                  <button onClick={() => confirmDeleteProduct(product)} className="editProd">Delete</button>
                 </div>
               </div>
             </div>
