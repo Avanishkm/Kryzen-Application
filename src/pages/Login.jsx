@@ -46,6 +46,11 @@ const Login = () => {
             </Link>
             
           </center>
+          <center>
+            <Link to={"/register"}>
+              <p className="register_login">Create Account?</p>
+            </Link>
+          </center>
         </form>
       </div>
       
